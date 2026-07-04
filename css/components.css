@@ -388,27 +388,6 @@
   }
 }
 
-/* --- Paw trail connector between feature cards --- */
-.paw-trail {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-8);
-  margin-block: var(--space-8);
-  opacity: 0.55;
-}
-
-.paw-trail svg {
-  width: 20px;
-  height: 20px;
-  transform: rotate(20deg);
-}
-
-@media (max-width: 767px) {
-  .paw-trail {
-    display: none;
-  }
-}
-
 /* --- Loading spinner --- */
 .spinner-buddy {
   width: 40px;
