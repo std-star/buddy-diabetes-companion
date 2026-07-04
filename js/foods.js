@@ -21,9 +21,12 @@ class FoodExplorer {
   init() {
     this.renderEmptyState();
     this.loadOwnDataset();
-    // Demo call so the API integration is visible before the search box
-    // is wired up in the next step.
-    this.searchFood('banana');
+    this.searchForm.addEventListener('submit', (e) => this.handleSearchSubmit(e));
+  }
+
+  handleSearchSubmit(event) {
+    event.preventDefault();
+    this.searchFood(this.searchInput.value);
   }
 
   renderEmptyState() {
