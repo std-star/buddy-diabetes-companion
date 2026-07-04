@@ -29,7 +29,7 @@
   {
     "id": "chia-seeds",
     "name": "Chia Seeds",
-    "emoji": "🫘",
+    "emoji": "🌱",
     "description": "Tiny seeds that swell in liquid — stir into yogurt, oats, or water.",
     "glycemicIndex": 1,
     "giCategory": "low",
@@ -74,7 +74,7 @@
   {
     "id": "chickpeas",
     "name": "Chickpeas",
-    "emoji": "🫛",
+    "emoji": "🥫",
     "description": "Cooked chickpeas, great in salads, stews, or roasted as a snack.",
     "glycemicIndex": 28,
     "giCategory": "low",
@@ -137,7 +137,7 @@
   {
     "id": "cinnamon",
     "name": "Cinnamon",
-    "emoji": "🧂",
+    "emoji": "🌿",
     "description": "A spice to sprinkle on oats, yogurt, or coffee.",
     "glycemicIndex": 0,
     "giCategory": "low",
