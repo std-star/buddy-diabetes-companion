@@ -1,0 +1,146 @@
+[
+  {
+    "id": "leafy-greens",
+    "name": "Leafy Greens",
+    "emoji": "🥬",
+    "description": "Spinach, kale, and other dark greens, raw or lightly sautéed.",
+    "glycemicIndex": 15,
+    "giCategory": "low",
+    "whyRecommended": "Very low in carbs and calories while packed with fiber and magnesium, so they barely move glucose at all."
+  },
+  {
+    "id": "avocado",
+    "name": "Avocado",
+    "emoji": "🥑",
+    "description": "Creamy, mild fruit great sliced, mashed, or diced into salads.",
+    "glycemicIndex": 15,
+    "giCategory": "low",
+    "whyRecommended": "Mostly healthy monounsaturated fat and fiber with almost no sugar, which helps slow digestion in the whole meal."
+  },
+  {
+    "id": "greek-yogurt",
+    "name": "Plain Greek Yogurt",
+    "emoji": "🥣",
+    "description": "Thick, tangy yogurt — best unsweetened, topped with your own fruit.",
+    "glycemicIndex": 11,
+    "giCategory": "low",
+    "whyRecommended": "High in protein and low in carbs, it keeps you full and causes a much smaller glucose rise than flavored yogurts."
+  },
+  {
+    "id": "chia-seeds",
+    "name": "Chia Seeds",
+    "emoji": "🫘",
+    "description": "Tiny seeds that swell in liquid — stir into yogurt, oats, or water.",
+    "glycemicIndex": 1,
+    "giCategory": "low",
+    "whyRecommended": "Almost entirely fiber, so they slow down how quickly nearby carbs are absorbed into the bloodstream."
+  },
+  {
+    "id": "salmon",
+    "name": "Salmon",
+    "emoji": "🐟",
+    "description": "Fatty fish, grilled or baked, rich in omega-3s.",
+    "glycemicIndex": 0,
+    "giCategory": "low",
+    "whyRecommended": "Contains no carbohydrates and is rich in omega-3 fats, which support heart health — a common concern alongside diabetes."
+  },
+  {
+    "id": "eggs",
+    "name": "Eggs",
+    "emoji": "🥚",
+    "description": "Versatile protein — boiled, scrambled, or as an omelet.",
+    "glycemicIndex": 0,
+    "giCategory": "low",
+    "whyRecommended": "A carb-free protein source that keeps you satisfied and steady, especially at breakfast when glucose is more sensitive."
+  },
+  {
+    "id": "almonds",
+    "name": "Almonds",
+    "emoji": "🌰",
+    "description": "A handful of raw or lightly roasted almonds.",
+    "glycemicIndex": 0,
+    "giCategory": "low",
+    "whyRecommended": "Nearly carb-free with fiber, protein, and fat, making them a steady snack that won't spike glucose."
+  },
+  {
+    "id": "broccoli",
+    "name": "Broccoli",
+    "emoji": "🥦",
+    "description": "Steamed or roasted broccoli florets.",
+    "glycemicIndex": 10,
+    "giCategory": "low",
+    "whyRecommended": "Low in carbs and high in fiber and vitamin C, with a minimal effect on blood sugar."
+  },
+  {
+    "id": "chickpeas",
+    "name": "Chickpeas",
+    "emoji": "🫛",
+    "description": "Cooked chickpeas, great in salads, stews, or roasted as a snack.",
+    "glycemicIndex": 28,
+    "giCategory": "low",
+    "whyRecommended": "A fiber-rich legume that digests slowly, giving a gentle, gradual rise in glucose rather than a spike."
+  },
+  {
+    "id": "lentils",
+    "name": "Lentils",
+    "emoji": "🍲",
+    "description": "Cooked lentils in soups, salads, or as a side dish.",
+    "glycemicIndex": 32,
+    "giCategory": "low",
+    "whyRecommended": "High in fiber and plant protein, lentils are digested slowly and support steady energy levels."
+  },
+  {
+    "id": "steel-cut-oats",
+    "name": "Steel-Cut Oats",
+    "emoji": "🥣",
+    "description": "Hearty morning oats, cooked plain and topped with berries.",
+    "glycemicIndex": 42,
+    "giCategory": "low",
+    "whyRecommended": "Less processed than instant oats, so they break down more slowly and produce a gentler glucose response."
+  },
+  {
+    "id": "quinoa",
+    "name": "Quinoa",
+    "emoji": "🍚",
+    "description": "A fluffy, protein-rich grain that works in place of rice.",
+    "glycemicIndex": 53,
+    "giCategory": "medium",
+    "whyRecommended": "Higher in protein and fiber than white rice, which helps moderate its impact on blood sugar."
+  },
+  {
+    "id": "sweet-potato",
+    "name": "Sweet Potato",
+    "emoji": "🍠",
+    "description": "Roasted or boiled sweet potato, skin on for extra fiber.",
+    "glycemicIndex": 63,
+    "giCategory": "medium",
+    "whyRecommended": "Naturally sweet with more fiber and nutrients than a regular potato, so it's a smarter starchy swap in moderate portions."
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "emoji": "🍎",
+    "description": "A whole apple with the skin on, not juiced.",
+    "glycemicIndex": 36,
+    "giCategory": "low",
+    "whyRecommended": "The fiber in whole fruit slows sugar absorption dramatically compared to apple juice or dried apple."
+  },
+  {
+    "id": "berries",
+    "name": "Mixed Berries",
+    "emoji": "🫐",
+    "description": "Blueberries, strawberries, and raspberries — fresh or frozen.",
+    "glycemicIndex": 40,
+    "giCategory": "low",
+    "whyRecommended": "Lower in sugar than most fruits and high in fiber and antioxidants, making them a gentler sweet treat."
+  },
+  {
+    "id": "cinnamon",
+    "name": "Cinnamon",
+    "emoji": "🧂",
+    "description": "A spice to sprinkle on oats, yogurt, or coffee.",
+    "glycemicIndex": 0,
+    "giCategory": "low",
+    "whyRecommended": "Adds warmth and sweetness without any carbs, and some studies suggest it may modestly support insulin sensitivity."
+  }
+]
