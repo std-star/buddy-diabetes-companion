@@ -1,0 +1,255 @@
+/* ==========================================================================
+   Buddy — Design Tokens, Reset & Shared Layout
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* --- Color: teal + navy core, warm cream surface, coral/amber accents --- */
+  --teal-900: #0b3f3c;
+  --teal-700: #14807a;
+  --teal-500: #1fab9f;
+  --teal-200: #bfe8e3;
+  --teal-100: #e2f5f2;
+
+  --navy-900: #16283d;
+  --navy-700: #1d3557;
+  --navy-500: #2f4d78;
+
+  --coral-600: #e8623f;
+  --coral-500: #ff7f5c;
+  --coral-100: #ffe4da;
+
+  --amber-600: #d97706;
+  --amber-500: #ffb347;
+  --amber-100: #fff2df;
+
+  --success-600: #1f8a5f;
+  --success-100: #dcf3e8;
+
+  --danger-600: #c94c3b;
+  --danger-100: #fbe2dd;
+
+  --cream-50: #fbf6ee;
+  --cream-0: #fffdf9;
+  --ink-900: #1b2a2e;
+  --ink-700: #3d4d50;
+  --ink-500: #62726f;
+
+  /* --- Semantic tokens --- */
+  --color-bg: var(--cream-50);
+  --color-surface: var(--cream-0);
+  --color-primary: var(--teal-700);
+  --color-primary-dark: var(--teal-900);
+  --color-secondary: var(--navy-700);
+  --color-accent: var(--coral-500);
+  --color-text: var(--ink-900);
+  --color-text-muted: var(--ink-500);
+  --color-border: var(--teal-100);
+
+  /* --- Type --- */
+  --font-display: 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+
+  /* --- Spacing scale (4/8pt rhythm) --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* --- Radius & shadow --- */
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-soft:
+    0 1px 2px rgba(27, 42, 46, 0.06),
+    0 8px 24px rgba(27, 42, 46, 0.08);
+  --shadow-lift:
+    0 2px 4px rgba(27, 42, 46, 0.08),
+    0 16px 40px rgba(27, 42, 46, 0.12);
+
+  --transition-fast: 150ms ease-out;
+  --transition-base: 250ms ease-out;
+}
+
+/* --- Reset --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--navy-900);
+  line-height: 1.2;
+  margin: 0 0 var(--space-4);
+}
+
+p {
+  margin: 0 0 var(--space-4);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* --- Focus visibility (accessibility) --- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.card:focus-visible {
+  outline: 3px solid var(--teal-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- Shared layout --- */
+.container-xl {
+  width: 100%;
+  max-width: 1140px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+main {
+  display: block;
+}
+
+section {
+  padding-block: var(--space-16);
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 640px;
+  margin-inline: auto;
+  margin-bottom: var(--space-12);
+}
+
+.section-heading .eyebrow {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--coral-600);
+  background: var(--coral-100);
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-4);
+}
+
+.section-heading p {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+
+.text-muted-custom {
+  color: var(--color-text-muted);
+}
+
+/* --- Skip link --- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--navy-900);
+  color: #fff;
+  padding: var(--space-3) var(--space-4);
+  z-index: 1000;
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* --- Footer --- */
+.site-footer {
+  background: var(--navy-900);
+  color: var(--teal-100);
+  padding-block: var(--space-12);
+  margin-top: var(--space-16);
+}
+
+.site-footer a {
+  color: var(--teal-200);
+}
+
+.site-footer .footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.footer-disclaimer {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  font-size: 0.9rem;
+  color: var(--teal-200);
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.footer-disclaimer svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+@media (max-width: 767px) {
+  section {
+    padding-block: var(--space-12);
+  }
+  :root {
+    font-size: 15px;
+  }
+}
