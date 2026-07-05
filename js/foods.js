@@ -79,8 +79,12 @@ class FoodExplorer {
     new AlertBanner('error', message).show();
   }
 
-  renderNutritionResults(items) {
+  renderNutritionResults(items, interpretedAs) {
+    const note = interpretedAs
+      ? `<p class="text-muted-custom" style="text-align:center; margin-bottom: var(--space-6);">Showing results for "${this._escape(interpretedAs)}"</p>`
+      : '';
     this.resultsEl.innerHTML = `
+      ${note}
       <div class="row g-4">
         ${items.map((item) => this._nutritionCardHtml(item)).join('')}
       </div>
@@ -96,12 +100,18 @@ class FoodExplorer {
 
     this.renderLoading();
 
+    // USDA's search is a food-database lookup, not a natural-language
+    // nutrition parser -- quantity/unit words like "1 cup" actively hurt its
+    // relevance ranking (they match unrelated foods measured in cups/ounces
+    // elsewhere), so we search on just the core food term.
+    const coreTerm = this._stripQuantityPrefix(query);
+
     try {
       // Fetch a larger pool than we display: USDA's relevance ranking often
       // puts composite dishes (e.g. "Croissants, apple") above the plain
       // whole food, so we re-rank client-side before trimming to the limit.
       const params = new URLSearchParams({
-        query,
+        query: coreTerm,
         pageSize: 20,
         dataType: 'Foundation,SR Legacy',
         api_key: FoodExplorer.API_KEY,
@@ -118,12 +128,12 @@ class FoodExplorer {
       const data = await response.json();
 
       if (!data.foods || data.foods.length === 0) {
-        this.renderNoResults(query);
+        this.renderNoResults(coreTerm);
         return;
       }
 
-      const ranked = this._prioritizeDirectMatches(data.foods, query);
-      this.renderNutritionResults(ranked.slice(0, FoodExplorer.RESULT_LIMIT));
+      const ranked = this._prioritizeDirectMatches(data.foods, coreTerm);
+      this.renderNutritionResults(ranked.slice(0, FoodExplorer.RESULT_LIMIT), coreTerm !== query.toLowerCase() ? coreTerm : null);
     } catch (err) {
       console.error('FoodExplorer: search failed', err);
       if (err.message === 'INVALID_KEY') {
@@ -134,14 +144,25 @@ class FoodExplorer {
     }
   }
 
+  _stripQuantityPrefix(query) {
+    const units = 'cups?|tbsps?|tablespoons?|tsps?|teaspoons?|oz|ounces?|lbs?|pounds?|g|grams?|kg|kilograms?|slices?|pieces?|servings?';
+    const pattern = new RegExp(`^\\d+(\\.\\d+)?\\s*(${units})?\\s*(of\\s+)?`, 'i');
+    const stripped = query.replace(pattern, '').trim();
+    return stripped || query;
+  }
+
   _prioritizeDirectMatches(foods, query) {
-    const q = query.trim().toLowerCase();
+    // Strip a trailing "s" so "apple"/"apples" and "Apples"/"Apple" all
+    // compare equal, without using startsWith -- that looser check let
+    // "Rice crackers" false-positive as a match for the query "rice".
+    const normalize = (s) => s.trim().toLowerCase().replace(/s$/, '');
+    const q = normalize(query);
     // USDA's description format is "Main food, modifiers, ..." — a direct
     // match means the food itself (not a composite dish it's an ingredient
     // in) is what was searched for, e.g. "Apples, raw" for query "apple".
     const isDirectMatch = (food) => {
-      const firstSegment = food.description.split(',')[0].trim().toLowerCase();
-      return firstSegment === q || firstSegment === `${q}s` || firstSegment.startsWith(q);
+      const firstSegment = normalize(food.description.split(',')[0]);
+      return firstSegment === q;
     };
     return [...foods].sort((a, b) => Number(!isDirectMatch(a)) - Number(!isDirectMatch(b)));
   }
