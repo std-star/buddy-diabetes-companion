@@ -7,7 +7,7 @@ class FoodExplorer {
   // DEMO_KEY is USDA's public testing key (rate-limited to ~30 requests/hour
   // per IP). Get your own free key instantly at https://api.data.gov/signup/
   // and paste it below for normal use.
-  static API_KEY = 'DEMO_KEY';
+  static API_KEY = 'rQGfWW7krGFtsSVqi3yrUawyK3NiaoWyiDGCiRKv';
   static API_URL = 'https://api.nal.usda.gov/fdc/v1/foods/search';
   static RESULT_LIMIT = 6;
 
