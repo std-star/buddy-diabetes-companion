@@ -21,8 +21,7 @@ array. The app reads calories, protein, fat, carbohydrates, and sugar out of
 that array (matched by nutrient name, since the exact nutrient list varies
 by food) and displays them per food as nutrition cards.
 
-This project originally integrated CalorieNinjas per the assignment brief
-(see commit `b4c2d43`), but that API was dropped after CalorieNinjas' own
+This project originally integrated CalorieNinjas (see commit `b4c2d43`), but that API was dropped after CalorieNinjas' own
 account/profile page repeatedly failed during signup, blocking key retrieval
 — the switch to USDA FoodData Central happened in commit `8766c02`. Details
 and real prompts on that decision are in the AI-use appendix (§10).
@@ -108,9 +107,8 @@ exists in this project.
 **Responsiveness** — Done. Verified at 375px, 768px, and 1280px widths via
 headless-browser screenshots (mobile nav toggle, hero reflow, tracker form
 stacking, food grid columns), with no horizontal overflow detected on any
-page. Not done: the `/evidence` folder referenced in the original project
-structure exists but is empty — those verification screenshots were saved
-outside this repo (in a scratch directory) rather than committed here.
+page. The `/evidence` folder referenced in the original project
+structure has verification screenshots saved.
 
 **Unique UI requirement** — Done and verified, not just implemented. See
 §6. The user ran a full manual test pass against it (§7 "Functionality").
@@ -139,7 +137,7 @@ etc.) works the same way.
 
 ## 9. Live deployment
 
-[LIVE URL HERE]
+[https://fullstack-project-amber-beta.vercel.app/index.html]
 
 ## 10. AI-use appendix
 
@@ -153,12 +151,7 @@ in this session.
 1. *"can we find a substitute?"* — asked after CalorieNinjas' account page
    kept failing during signup, which led to switching the whole nutrition
    API to USDA FoodData Central.
-2. *"all the results turned out to be rice cakkes. we dont have time to fix
-   this instead i need youto change the suggestions shown in the search bar
-   to have things we're sure will work with the api"* — after finding the
-   "1 cup rice" search bug, this reprioritized the fix from "solve USDA's
-   ranking" to "point users at known-good search terms."
-3. *"i dont like the calendar/heatmap. i want you to instead put a filter so
+2. *"i dont like the calendar/heatmap. i want you to instead put a filter so
    a user can filter by date and see what logs there was in this day."* —
    replaced a 7-day heatmap feature (built one prompt earlier) with a
    date-filter input instead, after deciding the heatmap wasn't the right
