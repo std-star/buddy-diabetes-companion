@@ -50,6 +50,11 @@
           <p>A quick log now beats a fuzzy memory later — Buddy will let you know how each reading looks the moment you save it.</p>
         </div>
 
+        <div style="margin-bottom: var(--space-12);">
+          <h2 style="font-size:1.2rem; margin-bottom: var(--space-4);">This week at a glance</h2>
+          <div id="weekHeatmap" class="week-heatmap" aria-live="polite"></div>
+        </div>
+
         <div class="row g-5">
           <div class="col-12 col-lg-5">
             <form id="glucoseForm" class="tracker-form-card" novalidate>
@@ -57,9 +62,15 @@
                 <label class="form-label-buddy" for="glucoseValue">Glucose value (mg/dL) <span aria-hidden="true">*</span></label>
                 <input type="number" id="glucoseValue" name="glucoseValue" class="form-control-buddy" min="1" step="1" required />
               </div>
-              <div class="mb-4">
-                <label class="form-label-buddy" for="readingDate">Date <span aria-hidden="true">*</span></label>
-                <input type="date" id="readingDate" name="readingDate" class="form-control-buddy" required />
+              <div class="row g-3 mb-4">
+                <div class="col-7">
+                  <label class="form-label-buddy" for="readingDate">Date <span aria-hidden="true">*</span></label>
+                  <input type="date" id="readingDate" name="readingDate" class="form-control-buddy" required />
+                </div>
+                <div class="col-5">
+                  <label class="form-label-buddy" for="readingTime">Time</label>
+                  <input type="time" id="readingTime" name="readingTime" class="form-control-buddy" />
+                </div>
               </div>
               <div class="mb-4">
                 <label class="form-label-buddy" for="notes">Notes <span class="text-muted-custom" style="font-weight:400;">(optional)</span></label>

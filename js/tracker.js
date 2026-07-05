@@ -10,15 +10,15 @@ class GlucoseTracker {
     this.listEl = document.getElementById('readingsList');
     this.valueInput = document.getElementById('glucoseValue');
     this.dateInput = document.getElementById('readingDate');
+    this.timeInput = document.getElementById('readingTime');
     this.notesInput = document.getElementById('notes');
+    this.heatmapEl = document.getElementById('weekHeatmap');
     this.readings = this.storage.get('readings', []);
     this.init();
   }
 
   init() {
-    if (!this.dateInput.value) {
-      this.dateInput.value = this._today();
-    }
+    this._resetDateTimeDefaults();
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     this.render();
   }
@@ -28,6 +28,7 @@ class GlucoseTracker {
 
     const rawValue = this.valueInput.value;
     const date = this.dateInput.value;
+    const time = this.timeInput.value;
     const notes = this.notesInput.value.trim();
 
     if (!rawValue || !date) {
@@ -41,14 +42,23 @@ class GlucoseTracker {
       return;
     }
 
-    const reading = { id: Date.now(), value, date, notes };
+    const reading = { id: Date.now(), value, date, time, notes };
     this.readings.unshift(reading);
     this.storage.set('readings', this.readings);
 
     this.showRangeAlert(value);
     this.form.reset();
-    this.dateInput.value = this._today();
+    this._resetDateTimeDefaults();
     this.render();
+  }
+
+  _resetDateTimeDefaults() {
+    if (!this.dateInput.value) {
+      this.dateInput.value = this._today();
+    }
+    if (!this.timeInput.value) {
+      this.timeInput.value = this._now();
+    }
   }
 
   showRangeAlert(value) {
@@ -64,9 +74,47 @@ class GlucoseTracker {
   render() {
     if (this.readings.length === 0) {
       this.listEl.innerHTML = '<div class="reading-empty">No readings yet — log your first one to see it here.</div>';
-      return;
+    } else {
+      this.listEl.innerHTML = this.readings.map((reading) => this._readingCardHtml(reading)).join('');
     }
-    this.listEl.innerHTML = this.readings.map((reading) => this._readingCardHtml(reading)).join('');
+    this.renderWeekHeatmap();
+  }
+
+  renderWeekHeatmap() {
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push(d);
+    }
+
+    this.heatmapEl.innerHTML = days
+      .map((d) => {
+        const iso = this._toIsoDate(d);
+        const dayReadings = this.readings.filter((r) => r.date === iso);
+        const status = this._dayStatus(dayReadings);
+        const dayLabel = d.toLocaleDateString(undefined, { weekday: 'short' });
+        const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const title = dayReadings.length
+          ? `${dayReadings.length} reading${dayReadings.length > 1 ? 's' : ''}: ${dayReadings.map((r) => r.value).join(', ')} mg/dL`
+          : 'No readings';
+
+        return `
+          <div class="heatmap-day status-${status}" title="${this._escape(title)}">
+            <div class="day-label">${dayLabel}</div>
+            <div class="day-date">${dateLabel}</div>
+            <div class="day-indicator">${dayReadings.length || ''}</div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  _dayStatus(dayReadings) {
+    if (dayReadings.length === 0) return 'empty';
+    if (dayReadings.some((r) => r.value < 70)) return 'low';
+    if (dayReadings.some((r) => r.value > 180)) return 'high';
+    return 'ok';
   }
 
   _statusFor(value) {
@@ -82,13 +130,14 @@ class GlucoseTracker {
       month: 'short',
       day: 'numeric',
     });
+    const formattedTime = this._formatTime(reading.time);
 
     return `
       <div class="reading-card ${status.cls}">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
           <div>
             <div class="reading-value">${reading.value} <span style="font-size:0.9rem; font-weight:400;">mg/dL</span></div>
-            <div class="reading-meta">${formattedDate}</div>
+            <div class="reading-meta">${formattedDate}${formattedTime ? ` at ${formattedTime}` : ''}</div>
           </div>
           <span class="reading-badge" style="background: var(--${status.bg}); color: var(--${status.fg});">${status.label}</span>
         </div>
@@ -97,14 +146,31 @@ class GlucoseTracker {
     `;
   }
 
+  _formatTime(time) {
+    if (!time) return '';
+    const [hours, minutes] = time.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 === 0 ? 12 : hours % 12;
+    return `${hour12}:${String(minutes).padStart(2, '0')} ${period}`;
+  }
+
   _escape(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   }
 
+  _toIsoDate(date) {
+    return date.toISOString().slice(0, 10);
+  }
+
   _today() {
-    return new Date().toISOString().slice(0, 10);
+    return this._toIsoDate(new Date());
+  }
+
+  _now() {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   }
 }
 

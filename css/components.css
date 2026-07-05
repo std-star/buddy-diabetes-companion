@@ -537,6 +537,85 @@ textarea.form-control-buddy {
   resize: vertical;
 }
 
+/* --- Week heatmap --- */
+.week-heatmap {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-3);
+}
+
+.heatmap-day {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  padding: var(--space-3) var(--space-2);
+  text-align: center;
+}
+
+.heatmap-day .day-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--navy-900);
+}
+
+.heatmap-day .day-date {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.heatmap-day .day-indicator {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.heatmap-day.status-empty .day-indicator {
+  background: var(--teal-100);
+  color: var(--color-text-muted);
+}
+
+.heatmap-day.status-ok .day-indicator {
+  background: var(--success-600);
+}
+
+.heatmap-day.status-high .day-indicator {
+  background: var(--amber-600);
+}
+
+.heatmap-day.status-low .day-indicator {
+  background: var(--danger-600);
+}
+
+@media (max-width: 575px) {
+  .week-heatmap {
+    gap: var(--space-2);
+  }
+  .heatmap-day {
+    padding: var(--space-2) var(--space-1);
+  }
+  .heatmap-day .day-label {
+    font-size: 0.7rem;
+  }
+  .heatmap-day .day-date {
+    font-size: 0.6rem;
+  }
+  .heatmap-day .day-indicator {
+    width: 24px;
+    height: 24px;
+    font-size: 0.65rem;
+  }
+}
+
 .reading-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
