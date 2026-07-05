@@ -1,12 +1,25 @@
 /**
  * foods.js — food explorer page.
- * Handles the CalorieNinjas API search section and the hand-curated
+ * Handles the USDA FoodData Central search section and the hand-curated
  * "Diabetes-Friendly Picks" dataset, kept as two clearly separate concerns.
  */
 class FoodExplorer {
-  // Get a free key at https://calorieninjas.com/api and paste it below.
-  static API_KEY = 'YOUR_CALORIENINJAS_API_KEY';
-  static API_URL = 'https://api.calorieninjas.com/v1/nutrition?query=';
+  // DEMO_KEY is USDA's public testing key (rate-limited to ~30 requests/hour
+  // per IP). Get your own free key instantly at https://api.data.gov/signup/
+  // and paste it below for normal use.
+  static API_KEY = 'DEMO_KEY';
+  static API_URL = 'https://api.nal.usda.gov/fdc/v1/foods/search';
+  static RESULT_LIMIT = 6;
+
+  // USDA nutrient names vary slightly by data source, so each stat is matched
+  // by a case-insensitive substring rather than an exact nutrientId.
+  static NUTRIENT_MATCHERS = {
+    calories: (n) => n.nutrientName.includes('Energy') && n.unitName === 'KCAL',
+    protein: (n) => n.nutrientName.includes('Protein'),
+    fat: (n) => n.nutrientName.includes('lipid'),
+    carbs: (n) => n.nutrientName.includes('Carbohydrate'),
+    sugar: (n) => n.nutrientName.includes('Sugars'),
+  };
 
   constructor() {
     this.storage = new StorageManager('buddy');
@@ -84,11 +97,15 @@ class FoodExplorer {
     this.renderLoading();
 
     try {
-      const response = await fetch(`${FoodExplorer.API_URL}${encodeURIComponent(query)}`, {
-        headers: { 'X-Api-Key': FoodExplorer.API_KEY },
+      const params = new URLSearchParams({
+        query,
+        pageSize: FoodExplorer.RESULT_LIMIT,
+        dataType: 'Foundation,SR Legacy',
+        api_key: FoodExplorer.API_KEY,
       });
+      const response = await fetch(`${FoodExplorer.API_URL}?${params.toString()}`);
 
-      if (response.status === 400 || response.status === 401 || response.status === 403) {
+      if (response.status === 401 || response.status === 403) {
         throw new Error('INVALID_KEY');
       }
       if (!response.ok) {
@@ -97,33 +114,48 @@ class FoodExplorer {
 
       const data = await response.json();
 
-      if (!data.items || data.items.length === 0) {
+      if (!data.foods || data.foods.length === 0) {
         this.renderNoResults(query);
         return;
       }
 
-      this.renderNutritionResults(data.items);
+      this.renderNutritionResults(data.foods);
     } catch (err) {
       console.error('FoodExplorer: search failed', err);
       if (err.message === 'INVALID_KEY') {
-        this.renderError('Your CalorieNinjas API key is missing or invalid. Add a valid key in js/foods.js to search live nutrition data.');
+        this.renderError('The USDA FoodData Central API key is missing or invalid. Add a valid key in js/foods.js to search live nutrition data.');
       } else {
         this.renderError('Something went wrong reaching the nutrition service. Check your connection and try again.');
       }
     }
   }
 
-  _nutritionCardHtml(item) {
+  _readNutrient(foodNutrients, statKey) {
+    const matcher = FoodExplorer.NUTRIENT_MATCHERS[statKey];
+    const match = foodNutrients.find(matcher);
+    return match ? Math.round(match.value * 10) / 10 : null;
+  }
+
+  _nutritionCardHtml(food) {
+    const stats = {
+      calories: this._readNutrient(food.foodNutrients, 'calories'),
+      carbs: this._readNutrient(food.foodNutrients, 'carbs'),
+      protein: this._readNutrient(food.foodNutrients, 'protein'),
+      fat: this._readNutrient(food.foodNutrients, 'fat'),
+      sugar: this._readNutrient(food.foodNutrients, 'sugar'),
+    };
+    const display = (value, unit) => (value === null ? '—' : `${value}${unit}`);
+
     return `
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="nutrition-card h-100">
-          <h3>${this._escape(item.name)}</h3>
+          <h3>${this._escape(food.description.toLowerCase())}</h3>
           <ul class="nutrition-stats">
-            <li><span class="stat-label">Calories</span><span class="stat-value">${Math.round(item.calories)}</span></li>
-            <li><span class="stat-label">Carbs (g)</span><span class="stat-value">${item.carbohydrates_total_g}</span></li>
-            <li><span class="stat-label">Protein (g)</span><span class="stat-value">${item.protein_g}</span></li>
-            <li><span class="stat-label">Fat (g)</span><span class="stat-value">${item.fat_total_g}</span></li>
-            <li><span class="stat-label">Sugar (g)</span><span class="stat-value">${item.sugar_g}</span></li>
+            <li><span class="stat-label">Calories</span><span class="stat-value">${display(stats.calories, '')}</span></li>
+            <li><span class="stat-label">Carbs (g)</span><span class="stat-value">${display(stats.carbs, '')}</span></li>
+            <li><span class="stat-label">Protein (g)</span><span class="stat-value">${display(stats.protein, '')}</span></li>
+            <li><span class="stat-label">Fat (g)</span><span class="stat-value">${display(stats.fat, '')}</span></li>
+            <li><span class="stat-label">Sugar (g)</span><span class="stat-value">${display(stats.sugar, '')}</span></li>
           </ul>
         </div>
       </div>

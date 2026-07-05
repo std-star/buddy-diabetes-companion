@@ -14,7 +14,7 @@ trained diabetic alert dog or a care team's guidance.
 
 - `index.html` — home page: hero, feature overview, footer disclaimer.
 - `tracker.html` — glucose tracker: log readings, see instant feedback, view reading history.
-- `foods.html` — food explorer: live nutrition search (CalorieNinjas API) + a curated diabetes-friendly food grid.
+- `foods.html` — food explorer: live nutrition search (USDA FoodData Central API) + a curated diabetes-friendly food grid.
 
 ## Tech
 
@@ -37,14 +37,25 @@ python -m http.server 8000
 
 ## API used
 
-**[CalorieNinjas Nutrition API](https://calorieninjas.com/api)** — powers the
-search box on `foods.html`. Given a food name, it returns calories, carbs,
-protein, fat, and sugar per serving, which are rendered as nutrition cards.
+**[USDA FoodData Central API](https://fdc.nal.usda.gov/api-guide)** — powers
+the search box on `foods.html`. Given a food name, it returns matching foods
+(filtered to the "Foundation" and "SR Legacy" data types, which cover whole/
+generic foods rather than noisy branded products) with calories, carbs,
+protein, fat, and sugar per 100g, rendered as nutrition cards.
 
-To use it yourself, get a free API key at calorieninjas.com and paste it into
-`FoodExplorer.API_KEY` at the top of `js/foods.js`. Without a valid key, the
-search still works end-to-end — it just shows the styled "invalid API key"
-error state instead of results.
+The app ships with USDA's public `DEMO_KEY` (rate-limited to ~30 requests/
+hour per IP, meant for testing) so search works out of the box. For normal
+use, get a free key instantly at
+[api.data.gov/signup](https://api.data.gov/signup/) (no email verification,
+no account dashboard — the key is shown on the page and emailed immediately)
+and paste it into `FoodExplorer.API_KEY` at the top of `js/foods.js`. Without
+a valid key, the search still works end-to-end — it just shows the styled
+"invalid API key" error state instead of results.
+
+*(We originally built this against the CalorieNinjas Nutrition API per the
+assignment brief, but switched to USDA FoodData Central after CalorieNinjas'
+own account/profile page repeatedly failed during signup — see the AI-use
+appendix below.)*
 
 ## Unique requirement: styled alert messages
 
@@ -121,12 +132,17 @@ debugging]
    testing on your phone, etc.), and what the actual fix was]
 2. [same — a second concrete instance]
 
-*(Note: during development, testing in a headless browser surfaced two real
-issues worth mentioning here if you want a starting point: three food emoji
-in `data/foods.json` initially used newer Unicode characters that rendered
-as blank boxes in some environments, and the CalorieNinjas "invalid API key"
-error was initially only checked for HTTP 401/403 when the API actually
-returns 400 — both were caught by loading the pages in a browser and reading
-the console/network response, and fixed in `data/foods.json` and
-`js/foods.js`. Feel free to describe these in your own words, or replace with
-different real issues you personally ran into.)*
+*(Note: during development, a few real issues came up if you want a starting
+point — describe them in your own words, or swap in different ones you
+personally ran into:*
+- *three food emoji in `data/foods.json` initially used newer Unicode
+  characters that rendered as blank boxes in some environments, caught by
+  loading the page in a browser and looking at it;*
+- *the original CalorieNinjas integration checked HTTP 401/403 for an
+  invalid key, but CalorieNinjas actually returns 400 for that case, so the
+  specific error message wasn't showing — found by curling the API directly
+  and comparing the real response to what the code expected;*
+- *CalorieNinjas' own account/profile page repeatedly failed to load during
+  signup (an issue on their end, not something AI-generated code could fix),
+  so the project switched to the USDA FoodData Central API instead — worth
+  noting as an example of a real external blocker, not a code bug.)*
