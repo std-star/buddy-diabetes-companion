@@ -1,6 +1,6 @@
 /**
  * storage.js — generic localStorage wrapper with JSON parse/stringify.
- * Used by GlucoseTracker for readings and by FoodExplorer to cache API searches.
+ * Used by GlucoseTracker to persist glucose readings.
  */
 class StorageManager {
   constructor(namespace = 'buddy') {

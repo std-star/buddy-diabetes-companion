@@ -95,12 +95,15 @@ correct results — rather than solving the general case (commit `e1a3ee4`).
 This is a real, acknowledged gap, not a hidden one.
 
 **Code quality / ES6** — Every module is a genuine ES6 class, as required.
-One honest gap found while writing this README: `js/foods.js` line 25
-instantiates `this.storage = new StorageManager('buddy')`, and
-`js/storage.js`'s own doc comment claims it's "used by ... FoodExplorer to
-cache API searches" — but `FoodExplorer` never actually calls `.get()` or
-`.set()` on it anywhere. That instantiation is dead code; API search
-caching was never implemented, despite the comment implying it was.
+An earlier draft of this README caught a real gap here: `js/foods.js`
+instantiated `this.storage = new StorageManager('buddy')` but never called
+`.get()`/`.set()` on it, while `storage.js`'s own comment claimed it was
+"used by ... FoodExplorer to cache API searches" — a feature that was never
+built. Fixed by removing the unused instantiation (and the now-unneeded
+`<script src="js/storage.js">` tag on `foods.html`) and correcting the
+comment to only describe what's actually implemented: `StorageManager` is
+used solely by `GlucoseTracker` to persist readings. No search caching
+exists in this project.
 
 **Responsiveness** — Done. Verified at 375px, 768px, and 1280px widths via
 headless-browser screenshots (mobile nav toggle, hero reflow, tracker form

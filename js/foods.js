@@ -22,7 +22,6 @@ class FoodExplorer {
   };
 
   constructor() {
-    this.storage = new StorageManager('buddy');
     this.searchForm = document.getElementById('searchForm');
     this.searchInput = document.getElementById('foodSearchInput');
     this.resultsEl = document.getElementById('searchResults');
