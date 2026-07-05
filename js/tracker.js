@@ -14,8 +14,10 @@ class GlucoseTracker {
     this.notesInput = document.getElementById('notes');
     this.filterDateInput = document.getElementById('filterDate');
     this.clearFilterBtn = document.getElementById('clearFilterBtn');
+    this.sortToggleBtn = document.getElementById('sortToggleBtn');
     this.readings = this.storage.get('readings', []);
     this.activeFilterDate = null;
+    this.sortOrder = 'desc'; // 'desc' = newest first, by the reading's own date+time
     this.init();
   }
 
@@ -24,6 +26,13 @@ class GlucoseTracker {
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     this.filterDateInput.addEventListener('change', () => this.handleFilterChange());
     this.clearFilterBtn.addEventListener('click', () => this.clearFilter());
+    this.sortToggleBtn.addEventListener('click', () => this.toggleSortOrder());
+    this.render();
+  }
+
+  toggleSortOrder() {
+    this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
+    this.sortToggleBtn.textContent = this.sortOrder === 'desc' ? 'Newest first' : 'Oldest first';
     this.render();
   }
 
@@ -94,11 +103,11 @@ class GlucoseTracker {
       return;
     }
 
-    const visible = this.activeFilterDate
+    const filtered = this.activeFilterDate
       ? this.readings.filter((r) => r.date === this.activeFilterDate)
       : this.readings;
 
-    if (visible.length === 0) {
+    if (filtered.length === 0) {
       const label = new Date(`${this.activeFilterDate}T00:00:00`).toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'short',
@@ -107,6 +116,8 @@ class GlucoseTracker {
       this.listEl.innerHTML = `<div class="reading-empty">No readings logged on ${label}.</div>`;
       return;
     }
+
+    const visible = this._sortByDateTime(filtered);
 
     this.listEl.innerHTML = visible.map((reading) => this._readingCardHtml(reading)).join('');
   }
@@ -152,6 +163,15 @@ class GlucoseTracker {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  }
+
+  _sortByDateTime(readings) {
+    const withTimestamp = readings.map((r) => ({
+      reading: r,
+      timestamp: new Date(`${r.date}T${r.time || '00:00'}`).getTime(),
+    }));
+    withTimestamp.sort((a, b) => (this.sortOrder === 'desc' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp));
+    return withTimestamp.map((entry) => entry.reading);
   }
 
   _toIsoDate(date) {
