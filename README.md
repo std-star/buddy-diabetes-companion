@@ -148,10 +148,11 @@ test-case generation, and the Vercel deployment. No other AI tool was used
 in this session.
 
 **Actual prompts used during this build:**
-1. *"can we find a substitute?"* — asked after CalorieNinjas' account page
+1. check out "buddy-project-prompt.md" for the overall decisions took. This prompt was built using ChatGPT & Claude.
+2. *"can we find a substitute?"* — asked after CalorieNinjas' account page
    kept failing during signup, which led to switching the whole nutrition
    API to USDA FoodData Central.
-2. *"i dont like the calendar/heatmap. i want you to instead put a filter so
+3. *"i dont like the calendar/heatmap. i want you to instead put a filter so
    a user can filter by date and see what logs there was in this day."* —
    replaced a 7-day heatmap feature (built one prompt earlier) with a
    date-filter input instead, after deciding the heatmap wasn't the right
