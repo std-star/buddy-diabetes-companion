@@ -12,14 +12,31 @@ class GlucoseTracker {
     this.dateInput = document.getElementById('readingDate');
     this.timeInput = document.getElementById('readingTime');
     this.notesInput = document.getElementById('notes');
-    this.heatmapEl = document.getElementById('weekHeatmap');
+    this.filterDateInput = document.getElementById('filterDate');
+    this.clearFilterBtn = document.getElementById('clearFilterBtn');
     this.readings = this.storage.get('readings', []);
+    this.activeFilterDate = null;
     this.init();
   }
 
   init() {
     this._resetDateTimeDefaults();
     this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+    this.filterDateInput.addEventListener('change', () => this.handleFilterChange());
+    this.clearFilterBtn.addEventListener('click', () => this.clearFilter());
+    this.render();
+  }
+
+  handleFilterChange() {
+    this.activeFilterDate = this.filterDateInput.value || null;
+    this.clearFilterBtn.style.display = this.activeFilterDate ? 'inline-flex' : 'none';
+    this.render();
+  }
+
+  clearFilter() {
+    this.filterDateInput.value = '';
+    this.activeFilterDate = null;
+    this.clearFilterBtn.style.display = 'none';
     this.render();
   }
 
@@ -74,47 +91,24 @@ class GlucoseTracker {
   render() {
     if (this.readings.length === 0) {
       this.listEl.innerHTML = '<div class="reading-empty">No readings yet — log your first one to see it here.</div>';
-    } else {
-      this.listEl.innerHTML = this.readings.map((reading) => this._readingCardHtml(reading)).join('');
-    }
-    this.renderWeekHeatmap();
-  }
-
-  renderWeekHeatmap() {
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      days.push(d);
+      return;
     }
 
-    this.heatmapEl.innerHTML = days
-      .map((d) => {
-        const iso = this._toIsoDate(d);
-        const dayReadings = this.readings.filter((r) => r.date === iso);
-        const status = this._dayStatus(dayReadings);
-        const dayLabel = d.toLocaleDateString(undefined, { weekday: 'short' });
-        const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-        const title = dayReadings.length
-          ? `${dayReadings.length} reading${dayReadings.length > 1 ? 's' : ''}: ${dayReadings.map((r) => r.value).join(', ')} mg/dL`
-          : 'No readings';
+    const visible = this.activeFilterDate
+      ? this.readings.filter((r) => r.date === this.activeFilterDate)
+      : this.readings;
 
-        return `
-          <div class="heatmap-day status-${status}" title="${this._escape(title)}">
-            <div class="day-label">${dayLabel}</div>
-            <div class="day-date">${dateLabel}</div>
-            <div class="day-indicator">${dayReadings.length || ''}</div>
-          </div>
-        `;
-      })
-      .join('');
-  }
+    if (visible.length === 0) {
+      const label = new Date(`${this.activeFilterDate}T00:00:00`).toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+      this.listEl.innerHTML = `<div class="reading-empty">No readings logged on ${label}.</div>`;
+      return;
+    }
 
-  _dayStatus(dayReadings) {
-    if (dayReadings.length === 0) return 'empty';
-    if (dayReadings.some((r) => r.value < 70)) return 'low';
-    if (dayReadings.some((r) => r.value > 180)) return 'high';
-    return 'ok';
+    this.listEl.innerHTML = visible.map((reading) => this._readingCardHtml(reading)).join('');
   }
 
   _statusFor(value) {

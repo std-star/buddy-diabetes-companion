@@ -50,11 +50,6 @@
           <p>A quick log now beats a fuzzy memory later — Buddy will let you know how each reading looks the moment you save it.</p>
         </div>
 
-        <div style="margin-bottom: var(--space-12);">
-          <h2 style="font-size:1.2rem; margin-bottom: var(--space-4);">This week at a glance</h2>
-          <div id="weekHeatmap" class="week-heatmap" aria-live="polite"></div>
-        </div>
-
         <div class="row g-5">
           <div class="col-12 col-lg-5">
             <form id="glucoseForm" class="tracker-form-card" novalidate>
@@ -81,7 +76,16 @@
           </div>
 
           <div class="col-12 col-lg-7">
-            <h2 style="font-size:1.4rem;">Your readings</h2>
+            <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-3">
+              <h2 style="font-size:1.4rem; margin:0;">Your readings</h2>
+              <div class="d-flex align-items-end gap-2">
+                <div>
+                  <label class="form-label-buddy" for="filterDate" style="font-size:0.8rem; margin-bottom: var(--space-1);">Filter by date</label>
+                  <input type="date" id="filterDate" class="form-control-buddy" style="min-height:40px; padding: 0.4rem 0.75rem;" />
+                </div>
+                <button type="button" id="clearFilterBtn" class="btn-buddy btn-secondary-buddy" style="min-height:40px; padding: 0.4rem 1rem; display:none;">Show all</button>
+              </div>
+            </div>
             <div id="readingsList" aria-live="polite"></div>
           </div>
         </div>
