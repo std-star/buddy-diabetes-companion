@@ -97,9 +97,12 @@ class FoodExplorer {
     this.renderLoading();
 
     try {
+      // Fetch a larger pool than we display: USDA's relevance ranking often
+      // puts composite dishes (e.g. "Croissants, apple") above the plain
+      // whole food, so we re-rank client-side before trimming to the limit.
       const params = new URLSearchParams({
         query,
-        pageSize: FoodExplorer.RESULT_LIMIT,
+        pageSize: 20,
         dataType: 'Foundation,SR Legacy',
         api_key: FoodExplorer.API_KEY,
       });
@@ -119,7 +122,8 @@ class FoodExplorer {
         return;
       }
 
-      this.renderNutritionResults(data.foods);
+      const ranked = this._prioritizeDirectMatches(data.foods, query);
+      this.renderNutritionResults(ranked.slice(0, FoodExplorer.RESULT_LIMIT));
     } catch (err) {
       console.error('FoodExplorer: search failed', err);
       if (err.message === 'INVALID_KEY') {
@@ -128,6 +132,18 @@ class FoodExplorer {
         this.renderError('Something went wrong reaching the nutrition service. Check your connection and try again.');
       }
     }
+  }
+
+  _prioritizeDirectMatches(foods, query) {
+    const q = query.trim().toLowerCase();
+    // USDA's description format is "Main food, modifiers, ..." — a direct
+    // match means the food itself (not a composite dish it's an ingredient
+    // in) is what was searched for, e.g. "Apples, raw" for query "apple".
+    const isDirectMatch = (food) => {
+      const firstSegment = food.description.split(',')[0].trim().toLowerCase();
+      return firstSegment === q || firstSegment === `${q}s` || firstSegment.startsWith(q);
+    };
+    return [...foods].sort((a, b) => Number(!isDirectMatch(a)) - Number(!isDirectMatch(b)));
   }
 
   _readNutrient(foodNutrients, statKey) {
